@@ -53,18 +53,5 @@ Next Steps 🔮
 Implement geospatial analysis to map listings against city-wide factors like transit and tourism.
 Explore advanced visualizations using libraries like Plotly or Seaborn.
 Build a dashboard for interactive data exploration.
-How to Run the Project 🏃
-Clone the repo:
-
-bash
-git clone https://github.com/yourusername/ParisAirbnbAnalysis.git  
-Install dependencies:
-
-bash
-pip install -r requirements.txt  
-Run the Jupyter Notebook:
-
-bash
-jupyter notebook Airbnb_Analysis.ipynb  
 Contact 📬
 Have questions or suggestions? Feel free to reach out:
