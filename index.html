@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb Paris Analysis - 100 Days of Coding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glow { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+        .glow:hover { box-shadow: 0 0 30px rgba(102, 126, 234, 0.5); }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold gradient-text">Paris Analysis</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#overview" class="text-gray-300 hover:text-white transition-colors">Overview</a>
+                    <a href="#findings" class="text-gray-300 hover:text-white transition-colors">Findings</a>
+                    <a href="#visuals" class="text-gray-300 hover:text-white transition-colors">Visuals</a>
+                    <a href="#code" class="text-gray-300 hover:text-white transition-colors">Code</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-black"></div>
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="animate-fade-in">
+                                 <div class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-500/30 text-blue-400 text-sm font-medium mb-8">
+                     <i class="fas fa-calendar mr-2"></i>
+                     Day 8 - 100 Days of Coding by Noah Khomer
+                 </div>
+                
+                <h1 class="text-5xl md:text-7xl font-black mb-8 leading-tight">
+                    <span class="gradient-text">Airbnb Paris</span>
+                    <br>
+                    <span class="text-white">Data Analysis</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-400 max-w-4xl mx-auto mb-12 leading-relaxed">
+                    Deep dive into <span class="text-blue-400 font-semibold">250,000+ listings</span> and <span class="text-purple-400 font-semibold">5 million reviews</span> 
+                    to uncover the hidden patterns of Paris's short-term rental market
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-6 mb-16">
+                    <div class="glass rounded-2xl p-6 min-w-[200px] glow">
+                        <div class="text-3xl font-bold text-blue-400 mb-2">250K+</div>
+                        <div class="text-gray-400">Listings Analyzed</div>
+                    </div>
+                    <div class="glass rounded-2xl p-6 min-w-[200px] glow">
+                        <div class="text-3xl font-bold text-purple-400 mb-2">5M+</div>
+                        <div class="text-gray-400">Guest Reviews</div>
+                    </div>
+                    <div class="glass rounded-2xl p-6 min-w-[200px] glow">
+                        <div class="text-3xl font-bold text-green-400 mb-2">154MB</div>
+                        <div class="text-gray-400">Dataset Size</div>
+                    </div>
+                    <div class="glass rounded-2xl p-6 min-w-[200px] glow">
+                        <div class="text-3xl font-bold text-yellow-400 mb-2">20+</div>
+                        <div class="text-gray-400">Neighborhoods</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Goals -->
+    <section id="overview" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Project</span> Objectives
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    This analysis was designed to answer critical questions about the Paris Airbnb ecosystem
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="glass rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 glow">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-chart-line text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Market Trends</h3>
+                    <p class="text-gray-400">How have prices and host activity evolved over time?</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 glow">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-map-marker-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Neighborhood Analysis</h3>
+                    <p class="text-gray-400">Which areas command premium prices and why?</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 glow">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-gavel text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Regulatory Impact</h3>
+                    <p class="text-gray-400">How did 2015 regulations affect new host registrations?</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 glow">
+                    <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-home text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Accommodation Insights</h3>
+                    <p class="text-gray-400">What's the relationship between property size and pricing?</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Findings -->
+    <section id="findings" class="py-20 relative bg-gradient-to-b from-black to-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Key</span> Insights
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    The data reveals fascinating patterns about Paris's rental market dynamics
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="glass rounded-2xl p-8 border-l-4 border-blue-500 glow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-crown text-blue-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Élysée Premium</h3>
+                    </div>
+                    <p class="text-gray-300 text-lg leading-relaxed">
+                        The Élysée neighborhood commands the highest average prices, reflecting its prestigious location near the Champs-Élysées and luxury shopping districts.
+                    </p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 border-l-4 border-purple-500 glow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-chart-line text-purple-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Regulatory Impact</h3>
+                    </div>
+                    <p class="text-gray-300 text-lg leading-relaxed">
+                        Post-2015 regulations led to a sharp decline in new Airbnb host registrations, showing the effectiveness of Paris's short-term rental policies.
+                    </p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 border-l-4 border-green-500 glow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-expand-arrows-alt text-green-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Size Matters</h3>
+                    </div>
+                    <p class="text-gray-300 text-lg leading-relaxed">
+                        Larger accommodations consistently drive higher prices, particularly in premium neighborhoods where space is at a premium.
+                    </p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 border-l-4 border-yellow-500 glow">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-balance-scale text-yellow-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Market Stabilization</h3>
+                    </div>
+                    <p class="text-gray-300 text-lg leading-relaxed">
+                        Recent years show pricing fluctuations have stabilized, indicating a mature and regulated market environment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Analysis Process -->
+    <section class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Analysis</span> Process
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    From raw data to actionable insights through systematic analysis
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white font-bold text-sm">1</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Data Cleaning & Preparation</h3>
+                            <p class="text-gray-400">Filtered for Paris-specific listings, handled missing values, converted date fields, and resolved encoding issues.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white font-bold text-sm">2</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Statistical Analysis</h3>
+                            <p class="text-gray-400">Calculated price ranges, accommodation capacity analysis, temporal trends, and neighborhood-level comparisons.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white font-bold text-sm">3</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Visualization</h3>
+                            <p class="text-gray-400">Created comprehensive charts and graphs to reveal patterns and tell the story behind the data.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 glow">
+                    <h3 class="text-2xl font-bold mb-6 text-center">Technologies Used</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center space-x-3 p-3 bg-gray-800/50 rounded-lg">
+                            <i class="fab fa-python text-2xl text-blue-400"></i>
+                            <span class="text-gray-300">Python</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-database text-2xl text-green-400"></i>
+                            <span class="text-gray-300">Pandas</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-chart-bar text-2xl text-purple-400"></i>
+                            <span class="text-gray-300">Matplotlib</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-book text-2xl text-yellow-400"></i>
+                            <span class="text-gray-300">Jupyter</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visualizations -->
+    <section id="visuals" class="py-20 relative bg-gradient-to-b from-gray-900 to-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Data</span> Visualizations
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto mb-4">
+                    Key charts and graphs that reveal the story behind the data
+                </p>
+                <p class="text-lg text-blue-400 font-medium">
+                    <i class="fas fa-code mr-2"></i>
+                    These visualizations were generated using Python (Pandas + Matplotlib) and imported directly into this frontend
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 glow">
+                    <img src="Screenshot_79.png" alt="Neighborhood Price Analysis" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Average Prices by Neighborhood</h3>
+                        <p class="text-gray-400">Clear hierarchy with Élysée at the top</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 glow">
+                    <img src="Screenshot_80.png" alt="Accommodation Size vs Price" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Price vs Accommodation Capacity</h3>
+                        <p class="text-gray-400">Size correlation with pricing</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 glow">
+                    <img src="Screenshot_81.png" alt="New Hosts Over Time" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">New Host Registration Trends</h3>
+                        <p class="text-gray-400">Dramatic drop after 2015 regulations</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 glow">
+                    <img src="Screenshot_82.png" alt="Average Price Trends" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Price Evolution Over Time</h3>
+                        <p class="text-gray-400">Market stability patterns</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 glow">
+                    <img src="Screenshot_83.png" alt="Dual Axis Analysis" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Hosts vs Prices Correlation</h3>
+                        <p class="text-gray-400">Dual-axis relationship analysis</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300 glow">
+                    <img src="Screenshot_84.png" alt="Comprehensive Analysis" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Complete Market Overview</h3>
+                        <p class="text-gray-400">Comprehensive market insights</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Section -->
+    <section id="code" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Python</span> Analysis Code
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    The technical implementation behind the insights
+                </p>
+            </div>
+            
+            <div class="glass rounded-2xl p-8 glow">
+                <div class="bg-gray-900 rounded-xl p-6 overflow-x-auto">
+                    <pre class="text-green-400 text-sm leading-relaxed"><code>import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load and clean data
+file_path = r"C:\Users\noahk\Downloads\Airbnb+Data\Airbnb Data\Listings.csv"
+listings = pd.read_csv(file_path, encoding="ISO-8859-1", low_memory=False)
+
+# Convert dates and filter for Paris
+listings['host_since'] = pd.to_datetime(listings['host_since'], errors='coerce')
+paris_listings = listings[listings['city'] == 'Paris']
+
+# Calculate key metrics
+profile_metrics = {
+    'min_price': paris_listings['price'].min(),
+    'max_price': paris_listings['price'].max(),
+    'average_price': paris_listings['price'].mean(),
+    'min_accommodates': paris_listings['accommodates'].min(),
+    'max_accommodates': paris_listings['accommodates'].max(),
+    'average_accommodates': paris_listings['accommodates'].mean()
+}
+
+# Group by neighborhood and time
+paris_listings_neighbourhood = paris_listings.groupby('neighbourhood')['price'].mean().sort_values()
+paris_listings['host_year'] = paris_listings['host_since'].dt.year
+paris_listings_over_time = paris_listings.groupby('host_year').agg(
+    average_price=('price', 'mean'), 
+    new_hosts=('host_year', 'count')
+).reset_index()</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Challenges & Solutions -->
+    <section class="py-20 relative bg-gradient-to-b from-black to-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Challenges</span> & Solutions
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Real-world problems encountered and how they were solved
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="glass rounded-2xl p-8 border-t-4 border-red-500 glow">
+                    <div class="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-bug text-red-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-center">Data Encoding Issues</h3>
+                    <p class="text-gray-400 text-center mb-4">
+                        <strong>Problem:</strong> UnicodeDecodeError when reading CSV
+                    </p>
+                    <p class="text-gray-300 text-center">
+                        <strong>Solution:</strong> Specified encoding="ISO-8859-1" in pd.read_csv()
+                    </p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 border-t-4 border-yellow-500 glow">
+                    <div class="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-database text-yellow-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-center">Large Dataset Handling</h3>
+                    <p class="text-gray-400 text-center mb-4">
+                        <strong>Problem:</strong> 154MB file with 250,000+ rows
+                    </p>
+                    <p class="text-gray-300 text-center">
+                        <strong>Solution:</strong> Optimized Pandas operations and low_memory=False
+                    </p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 border-t-4 border-blue-500 glow">
+                    <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-calendar text-blue-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-center">Date Processing</h3>
+                    <p class="text-gray-400 text-center mb-4">
+                        <strong>Problem:</strong> Inconsistent date formats
+                    </p>
+                    <p class="text-gray-300 text-center">
+                        <strong>Solution:</strong> pd.to_datetime() with errors='coerce'
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Enhancements -->
+    <section class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Future</span> Enhancements
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Planned improvements to take this analysis to the next level
+                </p>
+            </div>
+            
+            <div class="glass rounded-2xl p-12 text-center glow">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-pie text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Interactive Dashboard</h3>
+                        <p class="text-gray-400">Web-based dashboard using Plotly or Dash</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-map text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Geospatial Analysis</h3>
+                        <p class="text-gray-400">Map listings against transit and tourism factors</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-brain text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Machine Learning</h3>
+                        <p class="text-gray-400">Price prediction models based on location and amenities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Reflection -->
+    <section class="py-20 relative bg-gradient-to-b from-gray-900 to-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="gradient-text">Project</span> Reflection
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Key learnings and insights from this data analysis journey
+                </p>
+            </div>
+            
+            <div class="glass rounded-2xl p-12 glow">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-8">What I Learned</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-6 h-6 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-2">Data Handling</h4>
+                                    <p class="text-gray-400">How to work with large, real-world datasets efficiently</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-6 h-6 bg-purple-500 rounded-full flex-shrink-0 mt-2"></div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-2">Problem Solving</h4>
+                                    <p class="text-gray-400">Troubleshooting encoding and performance issues</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-6 h-6 bg-green-500 rounded-full flex-shrink-0 mt-2"></div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-2">Storytelling</h4>
+                                    <p class="text-gray-400">Converting raw data into meaningful insights</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-32 h-32 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-float">
+                            <i class="fas fa-lightbulb text-white text-4xl"></i>
+                        </div>
+                        <p class="text-xl text-gray-300 leading-relaxed">
+                            "The analysis revealed fascinating insights about how regulations can impact market behavior, and how neighborhood characteristics drive pricing decisions. It's amazing how much story a dataset can tell when you ask the right questions!"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center space-x-2 mb-8">
+                <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-line text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold gradient-text">Paris Analysis</span>
+            </div>
+            
+            <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                This project represents Day 8 of my 100 Days of Coding challenge, showcasing the power of data analysis 
+                and the fascinating insights hidden within real-world datasets.
+            </p>
+            
+                         <div class="flex justify-center space-x-6">
+                 <a href="https://github.com/noahkhomer18" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                     <i class="fab fa-github text-2xl"></i>
+                 </a>
+                 <a href="https://www.linkedin.com/in/noah-khomer-19a935342" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                     <i class="fab fa-linkedin text-2xl"></i>
+                 </a>
+                 <a href="http://www.noah-khomer.com" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                     <i class="fas fa-globe text-2xl"></i>
+                 </a>
+             </div>
+            
+                         <div class="mt-8 pt-8 border-t border-gray-800">
+                 <p class="text-gray-500">
+                     © 2025 Airbnb Paris Analysis. Built with ❤️ by Noah Khomer.
+                 </p>
+             </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections for animations
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-bg');
+            if (parallax) {
+                const speed = scrolled * 0.5;
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
